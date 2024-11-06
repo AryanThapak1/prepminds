@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema({
   changedPasswordAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  Resume:{
+    type:mongoose.Types.ObjectId,
+    ref:Resume
+  }
 });
 
 userSchema.pre("save", async function (next) {
