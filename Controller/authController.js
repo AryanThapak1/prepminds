@@ -22,6 +22,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.login = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const email = req.body.email;
   const User = await user.findOne({ email }).select("+Password");
   if (!User) {
@@ -149,7 +150,7 @@ exports.checkForToken=catchAsync(async(req,res,next)=>{
     })
   }
 
-  const isTokenVerified=await jwt.verify(token,Process.env.JWT_Secret);
+  const isTokenVerified=await jwt.verify(token,process.env.JWT_Secret);
   if(!isTokenVerified){
     return res.status(403).json({
       status:"Failed",

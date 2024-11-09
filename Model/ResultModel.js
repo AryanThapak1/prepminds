@@ -8,7 +8,7 @@ const resultSchema=new mongoose.Schema({
     results:[
         {
             quizID:{
-                type:mongoose.Types.ObjectId,
+                type:mongoose.Schema.Types.ObjectId,
                 ref:'Quiz'
             },
             Score:{
@@ -22,3 +22,7 @@ const resultSchema=new mongoose.Schema({
     ]
 
 })
+
+const resultModel=mongoose.model("Result",resultSchema,"Result");
+
+module.exports=resultModel;

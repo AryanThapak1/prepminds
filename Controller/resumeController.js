@@ -14,7 +14,7 @@ exports.checkResume=catchAsync(async(req,res,next)=>{
 })
 exports.createResume=catchAsync(async(req,res,next)=>{
     const resume=req.body.resume;
-    const newResume=await Resume.create(Resume);
+    const newResume=await Resume.create(resume);
     res.status(200).json({
         Status:"Successful",
         message:"Created Successfully"

@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   Resume:{
     type:mongoose.Types.ObjectId,
-    ref:Resume
+    ref:"Resume"
   }
 });
 

@@ -13,7 +13,7 @@ exports.getQuestions=catchAsync(async(req,res,next)=>{
 })
 exports.addQuestions = catchAsync(async (req, res, next) => {
   const questions = req.body.questions;
-  const Questions = await Question.insertMany(questions);
+  const Questions = await Question.create(questions);
   res.status(200).json({ status: "Success", data:{
     Questions
   }});

@@ -6,14 +6,14 @@ const quizSchema=new mongoose.Schema({
         required:[true,"Enter a quiz id"]
     },
 
-    questions:{
-        type:mongoose.Types.ObjectId,
+    questions:[{
+        type:mongoose.Schema.Types.ObjectId,
         ref:'Question',
         required:[true,"A quiz must have questions"]
-    }
+    }]
 })
 
 
-const quizModel=mongoose.Model('Quiz',quizSchema);
+const quizModel=mongoose.model('Quiz',quizSchema);
 
 module.exports=quizModel;
