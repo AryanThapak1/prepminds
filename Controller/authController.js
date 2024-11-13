@@ -3,6 +3,7 @@ const sendEmail=require("./../utils/nodeMailer")
 const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAsync");
 const url=require('./../utils/url');
+const getEmail = require("../utils/decodeToken");
 
 exports.signup = catchAsync(async (req, res, next) => {
   const User = req.body;
@@ -20,6 +21,8 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
   next();
 });
+
+exports.
 
 exports.login = catchAsync(async (req, res, next) => {
   console.log(req.body);
@@ -57,6 +60,24 @@ exports.login = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+exports.checkAdmin=catchAsync(async (req,res,next)=>{
+  const email=getEmail(req);
+  const User=await User.findOne({email});
+  const role=User.role;
+  if(!User||role!="admin"){
+    return res.status(401).json({
+      status:"Failed",
+      message:"Unauthorized"
+    })
+  }
+
+  res.status(200).json({
+    status:"Succesful"
+  });
+
+  next();
+})
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const email = req.body.email;

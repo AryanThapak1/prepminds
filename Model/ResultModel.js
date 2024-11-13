@@ -8,10 +8,12 @@ const resultSchema=new mongoose.Schema({
     results:[
         {
             quizID:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'Quiz'
+                type:String
             },
             Score:{
+                type:Number
+            },
+            Total:{
                 type:Number
             },
             takenAt:{
