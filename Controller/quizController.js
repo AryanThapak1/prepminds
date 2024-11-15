@@ -15,7 +15,6 @@ exports.getQuizzes = catchAsync(async (req, res, next) => {
 });
 exports.addQuiz = catchAsync(async (req, res, next) => {
   const quiz = req.body.quiz;
-  console.log(quiz);
   const newQuiz = await Quiz.create(quiz);
   res.status(200).json({
     status: "Success",

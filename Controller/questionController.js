@@ -11,6 +11,7 @@ exports.getQuestions=catchAsync(async(req,res,next)=>{
     })
     next();
 })
+
 exports.addQuestions = catchAsync(async (req, res, next) => {
   const questions = req.body.questions;
   const Questions = await Question.create(questions);
