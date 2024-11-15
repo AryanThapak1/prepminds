@@ -9,9 +9,12 @@ const quizRouter = require("../Routes/quizRoutes");
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(cors({
-    credentials:true
-}));
+const corsOptions = {
+  origin: 'http://localhost:3000',
+};
+
+app.use(cors(corsOptions));
+
 mongoose
   .connect(
     process.env.DATABASE.replace("<password>", process.env.DATABASE_PASSWORD)

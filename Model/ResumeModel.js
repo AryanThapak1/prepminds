@@ -45,7 +45,7 @@ const projectSchema = new mongoose.Schema({
 const resumeSchema = new mongoose.Schema({
   Name: { type: String, required: [true, "Name is required"] },
   Address: { type: String, required: [true, "An address is required"] },
-  Mobile_No: { type: Number, required: [true, "Mobile Number is required"] },
+  Mobile_No: { type: String, required: [true, "Mobile Number is required"] },
   LinkedIn_url: { type: String, required: [true, "LinkedIn URL is necessary"] },
   github_url: { type: String, required: [true, "GitHub URL is required"] },
   Education: educationSchema,

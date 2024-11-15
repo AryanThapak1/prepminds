@@ -1,8 +1,8 @@
 const user = require("./../Model/UserModel");
-const sendEmail=require("./../utils/nodeMailer")
+const sendEmail = require("./../utils/nodeMailer");
 const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAsync");
-const url=require('./../utils/url');
+const url = require("./../utils/url");
 const getEmail = require("../utils/decodeToken");
 
 exports.signup = catchAsync(async (req, res, next) => {
@@ -21,7 +21,6 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
   next();
 });
-
 
 exports.login = catchAsync(async (req, res, next) => {
   console.log(req.body);
@@ -45,10 +44,7 @@ exports.login = catchAsync(async (req, res, next) => {
     expiresIn: process.env.JWT_Expire,
   });
 
-  User.Password=undefined;
-  res.cookie("token",token,{
-    httpOnly:true
-  })
+  User.Password = undefined;
   res.status(200).json({
     status: "Success",
     token: token,
@@ -60,28 +56,27 @@ exports.login = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.checkAdmin=catchAsync(async (req,res,next)=>{
-  const email=getEmail(req);
-  const User=await user.findOne({email});
-  if(!User){
+exports.checkAdmin = catchAsync(async (req, res, next) => {
+  const email = getEmail(req);
+  const User = await user.findOne({ email });
+  if (!User) {
     return res.status(401).json({
-      status:"Failed",
-      message:"Unauthorized"
-    })
+      status: "Failed",
+      message: "Unauthorized",
+    });
   }
 
-  const role=User.role;
+  const role = User.role;
 
-  if(role!="admin"){
+  if (role != "admin") {
     return res.status(401).json({
-      status:"Failed",
-      message:"Unauthorized"
-    })
+      status: "Failed",
+      message: "Unauthorized",
+    });
   }
 
- 
   next();
-})
+});
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   const email = req.body.email;
@@ -94,98 +89,94 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 
   const passwordResetToken = exisitingUser.createPasswordResetToken();
-  exisitingUser.passwordResetToken=passwordResetToken;
-  await exisitingUser.save({validateBeforeSave:false});
-  const resetURL=`${url}/${req.url}/${passwordResetToken}`
-  const text=`Forgot Your Password ? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\n
+  exisitingUser.passwordResetToken = passwordResetToken;
+  await exisitingUser.save({ validateBeforeSave: false });
+  const resetURL = `${url}/${req.url}/${passwordResetToken}`;
+  const text = `Forgot Your Password ? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\n
    If you didn't forget your password,please ignore this email`;
 
-   try{
+  try {
     sendEmail({
-        email:email,
-        text,
-        subject:"Forgot your Password ?"
-    })
+      email: email,
+      text,
+      subject: "Forgot your Password ?",
+    });
 
-    res.status(200).json(
-        {status:"Success"}
-    )
-   }
-
-   catch(err){
-    exisitingUser.passwordResetExpires=undefined;
-    exisitingUser.passwordResetToken=undefined;
-    await exisitingUser.save({validateBeforSave:false})
+    res.status(200).json({ status: "Success" });
+  } catch (err) {
+    exisitingUser.passwordResetExpires = undefined;
+    exisitingUser.passwordResetToken = undefined;
+    await exisitingUser.save({ validateBeforSave: false });
     console.log(err);
     return res.status(500).json({
-        status:"failed",
-        message:"There was an error while sending email pls try again later"
-    })
-   }
+      status: "failed",
+      message: "There was an error while sending email pls try again later",
+    });
+  }
 
-   next();
-
+  next();
 });
 
-
-exports.changePassword=catchAsync(async(req,res,next)=>{
-    const passwordResetToken=req.params.id;
-    const User=await user.findOne({passwordResetToken});
-    if(!User){
-        return res.status(403).json({
-            status:"Failed",
-            message:"Wrong reset token"
-        })
-    }
-
-    if(Date.now()>User.passwordResetExpires){
-        return res.status(500).json({
-            status:"Failed",
-            message:"Token is expired"
-        })
-    }
-    const newPassword=req.body.password
-    User.Password=newPassword;
-    User.passwordResetToken=undefined;
-    User.passwordResetExpires=undefined;
-    await User.save({validateBeforeSave:false});
-
-    res.status(200).json({
-        status:"Success",
-        message:"password change successfully"
-    })
-
-    next();
-
-})
-
-exports.checkForToken=catchAsync(async(req,res,next)=>{
-  if(!req.headers.authorization||!req.headers.authorization.startsWith('bearer')){
-    return res.status(401).json({
-      status:"Failed",
-      message:"Unauthorised"
-    })
-  }
-
-  const token=req.headers.authorization.split(" ")[1];
-  if(!token){
-    return res.status(404).json({
-      status:"Failed",
-      message:"Token Not Found"
-    })
-  }
-
-  const isTokenVerified=await jwt.verify(token,process.env.JWT_Secret);
-  if(!isTokenVerified){
+exports.changePassword = catchAsync(async (req, res, next) => {
+  const passwordResetToken = req.params.id;
+  const User = await user.findOne({ passwordResetToken });
+  if (!User) {
     return res.status(403).json({
-      status:"Failed",
-      message:"Not a vaild Token"
-    })
+      status: "Failed",
+      message: "Wrong reset token",
+    });
+  }
+
+  if (Date.now() > User.passwordResetExpires) {
+    return res.status(500).json({
+      status: "Failed",
+      message: "Token is expired",
+    });
+  }
+  const newPassword = req.body.password;
+  User.Password = newPassword;
+  User.passwordResetToken = undefined;
+  User.passwordResetExpires = undefined;
+  await User.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: "Success",
+    message: "password change successfully",
+  });
+
+  next();
+});
+
+exports.checkForToken = catchAsync(async (req, res, next) => {
+  if (
+    !req.headers.authorization ||
+    !req.headers.authorization.startsWith("bearer")
+  ) {
+    return res.status(401).json({
+      status: "Failed",
+      message: "Unauthorised",
+    });
+  }
+
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    return res.status(404).json({
+      status: "Failed",
+      message: "Token Not Found",
+    });
+  }
+
+  const isTokenVerified = await jwt.verify(token, process.env.JWT_Secret);
+  if (!isTokenVerified) {
+    return res.status(403).json({
+      status: "Failed",
+      message: "Not a vaild Token",
+    });
   }
 
   res.status(200).json({
-    status:"Success"
-  })
+    status: "Success",
+  });
 
   next();
-})
+});
